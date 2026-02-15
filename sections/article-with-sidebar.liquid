@@ -1,27 +1,24 @@
 {{ 'section-article-with-sidebar.css' | asset_url | stylesheet_tag }}
 
-<section class="article-sidebar-section" data-section-id="{{ section.id }}">
-  <div class="article-sidebar__container">
+<section class="as-section" data-section-id="{{ section.id }}">
+  <div class="as-container">
 
     {%- comment -%} ===== MAIN CONTENT (LEFT) ===== {%- endcomment -%}
-    <div class="article-sidebar__main">
+    <article class="as-main">
 
-      {%- comment -%} Title -----{%- endcomment -%}
-      <h1 class="article-sidebar__title">{{ section.settings.title }}</h1>
+      <h1 class="as-title">{{ section.settings.title }}</h1>
 
-      {%- comment -%} Date -----{%- endcomment -%}
       {% if section.settings.date != blank %}
-        <p class="article-sidebar__date">{{ section.settings.date }}</p>
+        <p class="as-date">{{ section.settings.date }}</p>
       {% endif %}
 
-      {%- comment -%} Body text -----{%- endcomment -%}
       {% if section.settings.body_text != blank %}
-        <div class="article-sidebar__body rte">{{ section.settings.body_text }}</div>
+        <div class="as-body rte">{{ section.settings.body_text }}</div>
       {% endif %}
 
-      {%- comment -%} Quote / Testimonial -----{%- endcomment -%}
+      {%- comment -%} Quote block -----{%- endcomment -%}
       {% if section.settings.quote_text != blank %}
-        <blockquote class="article-sidebar__quote">
+        <blockquote class="as-quote">
           <p>{{ section.settings.quote_text }}</p>
           {% if section.settings.quote_author != blank %}
             <cite>— {{ section.settings.quote_author }}</cite>
@@ -29,31 +26,31 @@
         </blockquote>
       {% endif %}
 
-      {%- comment -%} Before / After images -----{%- endcomment -%}
+      {%- comment -%} Before / After -----{%- endcomment -%}
       {% if section.settings.before_image != blank or section.settings.after_image != blank %}
-        <div class="article-sidebar__before-after">
+        <div class="as-ba">
           {% if section.settings.before_image != blank %}
-            <div class="article-sidebar__ba-item">
-              <span class="article-sidebar__ba-label">{{ section.settings.before_label | default: 'Avant' }}</span>
+            <div class="as-ba__item">
               <img
                 src="{{ section.settings.before_image | image_url: width: 600 }}"
-                alt="{{ section.settings.before_image.alt | default: 'Avant' }}"
+                alt="{{ section.settings.before_image.alt | default: section.settings.before_label }}"
                 loading="lazy"
                 width="600"
                 height="600"
               >
+              <span class="as-ba__label">{{ section.settings.before_label }}</span>
             </div>
           {% endif %}
           {% if section.settings.after_image != blank %}
-            <div class="article-sidebar__ba-item">
-              <span class="article-sidebar__ba-label">{{ section.settings.after_label | default: 'Après' }}</span>
+            <div class="as-ba__item">
               <img
                 src="{{ section.settings.after_image | image_url: width: 600 }}"
-                alt="{{ section.settings.after_image.alt | default: 'Après' }}"
+                alt="{{ section.settings.after_image.alt | default: section.settings.after_label }}"
                 loading="lazy"
                 width="600"
                 height="600"
               >
+              <span class="as-ba__label">{{ section.settings.after_label }}</span>
             </div>
           {% endif %}
         </div>
@@ -63,11 +60,11 @@
       {% for block in section.blocks %}
         {% case block.type %}
           {% when 'text' %}
-            <div class="article-sidebar__block-text rte" {{ block.shopify_attributes }}>
+            <div class="as-block-text rte" {{ block.shopify_attributes }}>
               {{ block.settings.text }}
             </div>
           {% when 'image' %}
-            <div class="article-sidebar__block-image" {{ block.shopify_attributes }}>
+            <div class="as-block-image" {{ block.shopify_attributes }}>
               <img
                 src="{{ block.settings.image | image_url: width: 1000 }}"
                 alt="{{ block.settings.image.alt | default: '' }}"
@@ -77,18 +74,18 @@
             </div>
         {% endcase %}
       {% endfor %}
-    </div>
+    </article>
 
     {%- comment -%} ===== SIDEBAR (RIGHT) ===== {%- endcomment -%}
-    <aside class="article-sidebar__sidebar">
-      <div class="article-sidebar__card">
+    <aside class="as-sidebar">
+      <div class="as-card">
 
         {% if section.settings.sidebar_heading != blank %}
-          <h2 class="article-sidebar__card-heading">{{ section.settings.sidebar_heading }}</h2>
+          <h2 class="as-card__heading">{{ section.settings.sidebar_heading }}</h2>
         {% endif %}
 
         {% if section.settings.sidebar_image != blank %}
-          <div class="article-sidebar__card-image">
+          <div class="as-card__image">
             <img
               src="{{ section.settings.sidebar_image | image_url: width: 500 }}"
               alt="{{ section.settings.sidebar_image.alt | default: section.settings.sidebar_heading }}"
@@ -99,19 +96,15 @@
         {% endif %}
 
         {% if section.settings.sidebar_text != blank %}
-          <div class="article-sidebar__card-text rte">{{ section.settings.sidebar_text }}</div>
-        {% endif %}
-
-        {% if section.settings.sidebar_price != blank %}
-          <p class="article-sidebar__card-price">{{ section.settings.sidebar_price }}</p>
+          <p class="as-card__text">{{ section.settings.sidebar_text }}</p>
         {% endif %}
 
         {% if section.settings.sidebar_button_label != blank %}
           <a
             href="{{ section.settings.sidebar_button_link | default: '#' }}"
-            class="article-sidebar__card-btn"
+            class="as-card__btn"
           >
-            {{ section.settings.sidebar_button_label }}
+            {{ section.settings.sidebar_button_label }} ›
           </a>
         {% endif %}
       </div>
@@ -123,29 +116,28 @@
 {
   "name": "Article + Sidebar",
   "tag": "section",
-  "class": "article-sidebar-wrapper",
+  "class": "as-wrapper",
   "settings": [
     {
       "type": "header",
       "content": "Contenu principal"
     },
     {
-      "type": "text",
+      "type": "textarea",
       "id": "title",
       "label": "Titre",
-      "default": "Comment transformer votre peau en 30 jours"
+      "default": "Dermatologist: '19 Years of Training Didn't Teach Me How to Reverse Crepey Arms. 30 Minutes in Paris Did'"
     },
     {
       "type": "text",
       "id": "date",
       "label": "Date",
-      "default": "15 février 2026"
+      "default": "December 17, 2025 at 8:42 am EST"
     },
     {
       "type": "richtext",
       "id": "body_text",
-      "label": "Texte principal",
-      "default": "<p>Découvrez notre routine complète pour une peau éclatante. Des milliers de personnes ont déjà transformé leur routine beauté grâce à nos conseils et nos produits naturels.</p>"
+      "label": "Texte principal"
     },
     {
       "type": "header",
@@ -155,13 +147,13 @@
       "type": "textarea",
       "id": "quote_text",
       "label": "Texte de la citation",
-      "default": "Après seulement 2 semaines d'utilisation, j'ai vu une différence incroyable. Ma peau est plus lumineuse, plus lisse, et les imperfections ont nettement diminué."
+      "default": "By the time you notice the damage, the optimal reversal window is already half-closed. This is the most preventable tragedy I see in my practice every single week."
     },
     {
       "type": "text",
       "id": "quote_author",
       "label": "Auteur de la citation",
-      "default": "Marie L., cliente vérifiée"
+      "default": "Anne Beaumont, Clinical Aesthetician"
     },
     {
       "type": "header",
@@ -176,7 +168,7 @@
       "type": "text",
       "id": "before_label",
       "label": "Label Avant",
-      "default": "Avant"
+      "default": "Before"
     },
     {
       "type": "image_picker",
@@ -187,17 +179,17 @@
       "type": "text",
       "id": "after_label",
       "label": "Label Après",
-      "default": "Après"
+      "default": "After"
     },
     {
       "type": "header",
       "content": "Sidebar — Produit"
     },
     {
-      "type": "text",
+      "type": "textarea",
       "id": "sidebar_heading",
       "label": "Titre sidebar",
-      "default": "Notre sérum best-seller"
+      "default": "Give Your Skin Its Last Chance At Full Recovery"
     },
     {
       "type": "image_picker",
@@ -205,22 +197,16 @@
       "label": "Image produit"
     },
     {
-      "type": "richtext",
+      "type": "textarea",
       "id": "sidebar_text",
       "label": "Description",
-      "default": "<p>Formulé avec des ingrédients 100% naturels pour nourrir et revitaliser votre peau en profondeur.</p>"
-    },
-    {
-      "type": "text",
-      "id": "sidebar_price",
-      "label": "Prix",
-      "default": "49,90 €"
+      "default": "Get the #1 Aesthetician-Recommended Solution For Reversing Sudden Hormonal Skin Collapse"
     },
     {
       "type": "text",
       "id": "sidebar_button_label",
       "label": "Texte du bouton",
-      "default": "Acheter maintenant"
+      "default": "CHECK AVAILABILITY"
     },
     {
       "type": "url",
