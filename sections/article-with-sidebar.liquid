@@ -1,0 +1,261 @@
+{{ 'section-article-with-sidebar.css' | asset_url | stylesheet_tag }}
+
+<section class="article-sidebar-section" data-section-id="{{ section.id }}">
+  <div class="article-sidebar__container">
+
+    {%- comment -%} ===== MAIN CONTENT (LEFT) ===== {%- endcomment -%}
+    <div class="article-sidebar__main">
+
+      {%- comment -%} Title -----{%- endcomment -%}
+      <h1 class="article-sidebar__title">{{ section.settings.title }}</h1>
+
+      {%- comment -%} Date -----{%- endcomment -%}
+      {% if section.settings.date != blank %}
+        <p class="article-sidebar__date">{{ section.settings.date }}</p>
+      {% endif %}
+
+      {%- comment -%} Body text -----{%- endcomment -%}
+      {% if section.settings.body_text != blank %}
+        <div class="article-sidebar__body rte">{{ section.settings.body_text }}</div>
+      {% endif %}
+
+      {%- comment -%} Quote / Testimonial -----{%- endcomment -%}
+      {% if section.settings.quote_text != blank %}
+        <blockquote class="article-sidebar__quote">
+          <p>{{ section.settings.quote_text }}</p>
+          {% if section.settings.quote_author != blank %}
+            <cite>— {{ section.settings.quote_author }}</cite>
+          {% endif %}
+        </blockquote>
+      {% endif %}
+
+      {%- comment -%} Before / After images -----{%- endcomment -%}
+      {% if section.settings.before_image != blank or section.settings.after_image != blank %}
+        <div class="article-sidebar__before-after">
+          {% if section.settings.before_image != blank %}
+            <div class="article-sidebar__ba-item">
+              <span class="article-sidebar__ba-label">{{ section.settings.before_label | default: 'Avant' }}</span>
+              <img
+                src="{{ section.settings.before_image | image_url: width: 600 }}"
+                alt="{{ section.settings.before_image.alt | default: 'Avant' }}"
+                loading="lazy"
+                width="600"
+                height="600"
+              >
+            </div>
+          {% endif %}
+          {% if section.settings.after_image != blank %}
+            <div class="article-sidebar__ba-item">
+              <span class="article-sidebar__ba-label">{{ section.settings.after_label | default: 'Après' }}</span>
+              <img
+                src="{{ section.settings.after_image | image_url: width: 600 }}"
+                alt="{{ section.settings.after_image.alt | default: 'Après' }}"
+                loading="lazy"
+                width="600"
+                height="600"
+              >
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {%- comment -%} Extra content blocks -----{%- endcomment -%}
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'text' %}
+            <div class="article-sidebar__block-text rte" {{ block.shopify_attributes }}>
+              {{ block.settings.text }}
+            </div>
+          {% when 'image' %}
+            <div class="article-sidebar__block-image" {{ block.shopify_attributes }}>
+              <img
+                src="{{ block.settings.image | image_url: width: 1000 }}"
+                alt="{{ block.settings.image.alt | default: '' }}"
+                loading="lazy"
+                width="1000"
+              >
+            </div>
+        {% endcase %}
+      {% endfor %}
+    </div>
+
+    {%- comment -%} ===== SIDEBAR (RIGHT) ===== {%- endcomment -%}
+    <aside class="article-sidebar__sidebar">
+      <div class="article-sidebar__card">
+
+        {% if section.settings.sidebar_heading != blank %}
+          <h2 class="article-sidebar__card-heading">{{ section.settings.sidebar_heading }}</h2>
+        {% endif %}
+
+        {% if section.settings.sidebar_image != blank %}
+          <div class="article-sidebar__card-image">
+            <img
+              src="{{ section.settings.sidebar_image | image_url: width: 500 }}"
+              alt="{{ section.settings.sidebar_image.alt | default: section.settings.sidebar_heading }}"
+              loading="lazy"
+              width="500"
+            >
+          </div>
+        {% endif %}
+
+        {% if section.settings.sidebar_text != blank %}
+          <div class="article-sidebar__card-text rte">{{ section.settings.sidebar_text }}</div>
+        {% endif %}
+
+        {% if section.settings.sidebar_price != blank %}
+          <p class="article-sidebar__card-price">{{ section.settings.sidebar_price }}</p>
+        {% endif %}
+
+        {% if section.settings.sidebar_button_label != blank %}
+          <a
+            href="{{ section.settings.sidebar_button_link | default: '#' }}"
+            class="article-sidebar__card-btn"
+          >
+            {{ section.settings.sidebar_button_label }}
+          </a>
+        {% endif %}
+      </div>
+    </aside>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Article + Sidebar",
+  "tag": "section",
+  "class": "article-sidebar-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenu principal"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Comment transformer votre peau en 30 jours"
+    },
+    {
+      "type": "text",
+      "id": "date",
+      "label": "Date",
+      "default": "15 février 2026"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Texte principal",
+      "default": "<p>Découvrez notre routine complète pour une peau éclatante. Des milliers de personnes ont déjà transformé leur routine beauté grâce à nos conseils et nos produits naturels.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Citation / Témoignage"
+    },
+    {
+      "type": "textarea",
+      "id": "quote_text",
+      "label": "Texte de la citation",
+      "default": "Après seulement 2 semaines d'utilisation, j'ai vu une différence incroyable. Ma peau est plus lumineuse, plus lisse, et les imperfections ont nettement diminué."
+    },
+    {
+      "type": "text",
+      "id": "quote_author",
+      "label": "Auteur de la citation",
+      "default": "Marie L., cliente vérifiée"
+    },
+    {
+      "type": "header",
+      "content": "Images Avant / Après"
+    },
+    {
+      "type": "image_picker",
+      "id": "before_image",
+      "label": "Image Avant"
+    },
+    {
+      "type": "text",
+      "id": "before_label",
+      "label": "Label Avant",
+      "default": "Avant"
+    },
+    {
+      "type": "image_picker",
+      "id": "after_image",
+      "label": "Image Après"
+    },
+    {
+      "type": "text",
+      "id": "after_label",
+      "label": "Label Après",
+      "default": "Après"
+    },
+    {
+      "type": "header",
+      "content": "Sidebar — Produit"
+    },
+    {
+      "type": "text",
+      "id": "sidebar_heading",
+      "label": "Titre sidebar",
+      "default": "Notre sérum best-seller"
+    },
+    {
+      "type": "image_picker",
+      "id": "sidebar_image",
+      "label": "Image produit"
+    },
+    {
+      "type": "richtext",
+      "id": "sidebar_text",
+      "label": "Description",
+      "default": "<p>Formulé avec des ingrédients 100% naturels pour nourrir et revitaliser votre peau en profondeur.</p>"
+    },
+    {
+      "type": "text",
+      "id": "sidebar_price",
+      "label": "Prix",
+      "default": "49,90 €"
+    },
+    {
+      "type": "text",
+      "id": "sidebar_button_label",
+      "label": "Texte du bouton",
+      "default": "Acheter maintenant"
+    },
+    {
+      "type": "url",
+      "id": "sidebar_button_link",
+      "label": "Lien du bouton"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Bloc texte",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Texte"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Bloc image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article + Sidebar"
+    }
+  ]
+}
+{% endschema %}
